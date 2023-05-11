@@ -1,0 +1,111 @@
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+class choicefrm extends JFrame implements ActionListener
+{
+	JButton cust,dealer,prod,dbill,cbill,report,bck;
+
+	choicefrm()
+	{
+		super("Open Another Frame");
+		setSize(500,500);
+		setLocation(300,300);
+		setLayout(null);
+
+		cust = new JButton("Customer Details");
+		dealer = new JButton("Dealer Details");
+		prod = new JButton("Product Details");
+		dbill = new JButton("Bill from Dealer");
+		cbill = new JButton("Bill for Customer");
+		bck = new JButton("BACK");
+		report = new JButton("REPORT");
+
+		add(cust);		add(dealer);	add(prod);	add(dbill);		add(cbill);		add(bck);	add(report);
+		
+		cust.setMnemonic('U');
+		dealer.setMnemonic('E');
+		prod.setMnemonic('P');
+		dbill.setMnemonic('D');
+		cbill.setMnemonic('C');
+		bck.setMnemonic('B');
+		report.setMnemonic('R');
+		
+		cust.setToolTipText("Click here for Customer Details");
+		dealer.setToolTipText("Click here for Dealer Details");
+		prod.setToolTipText("Click here for Product Details");
+		dbill.setToolTipText("Click here to Open Bill form Dealer");
+		cbill.setToolTipText("Click here to Open Bill for Customer");
+		bck.setToolTipText("Click here to Open Login page");
+		report.setToolTipText("Click here to Show Report");
+		
+		cust.setBounds(100,50,200,30);
+		dealer.setBounds(100,90,200,30);
+		prod.setBounds(100,130,200,30);
+		dbill.setBounds(100,170,200,30);
+		cbill.setBounds(100,210,200,30);
+		report.setBounds(100,250,200,30);
+		bck.setBounds(100,290,200,30);
+
+		cust.addActionListener(this);
+		dealer.addActionListener(this);
+		prod.addActionListener(this);
+		dbill.addActionListener(this);
+		cbill.addActionListener(this);
+		bck.addActionListener(this);
+		report.addActionListener(this);
+
+		setVisible(true);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+
+	public void actionPerformed(ActionEvent e)
+	{
+		if(e.getSource()==cust)
+		{
+			new cust_details();
+			dispose();
+		}
+		
+		if(e.getSource()==dealer)
+		{
+			new dealer_details();
+			dispose();
+		}
+		
+		if(e.getSource()==prod)
+		{
+			new prod_details();
+			dispose();
+		}
+		
+		if(e.getSource()==cbill)
+		{
+			new cust_bill();
+			dispose();
+		}
+		
+		if(e.getSource()==dbill)
+		{
+			new dealer_bill();
+			dispose();
+		}
+		
+		if(e.getSource()==bck)
+		{
+			new login();
+			dispose();
+		}
+		
+		if(e.getSource()==report)
+		{
+			new choice();
+			dispose();
+		}
+	}
+
+	public static void main(String args[])
+	{
+		new choicefrm();
+	}
+}

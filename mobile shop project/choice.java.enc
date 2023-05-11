@@ -1,0 +1,182 @@
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import java.sql.*;
+import java.text.*;
+
+class choice extends JFrame implements ActionListener
+{	
+	JLabel to,from,dtot,ctot,tot,bill;
+	JTextField tdtot,tctot,ttot,tbill;
+	DateButton calb1,calb2;
+	JButton bck,total,ext;
+	String sum=null,sum1=null;
+	int no1,no2,no3,amt;
+	
+	Connection cn;
+	Statement stm;
+	ResultSet rs;
+	PreparedStatement prstm;
+	String sql;
+	
+	choice()
+	{
+		super("Monthly Report");
+		setSize(620,500);
+		setLocation(200,200);
+		setLayout(null);
+		
+		to=new JLabel("TO");
+		from=new JLabel("FROM");
+		dtot=new JLabel("Dealer Total");
+		ctot=new JLabel("Customer Total");
+		tot=new JLabel("Total Income");
+		bill = new JLabel("Light Bill");
+		
+		ttot=new JTextField("");
+		tdtot=new JTextField("");
+		tctot=new JTextField("");
+		tbill = new JTextField("");
+		
+		calb1=new DateButton();
+		calb2=new DateButton();
+		
+		bck=new JButton("BACK");
+		total=new JButton("Total");
+		ext = new JButton("EXIT");
+		
+		to.setFont(new Font("Arial",Font.PLAIN,20));
+		from.setFont(new Font("Arial",Font.PLAIN,20));	
+		calb1.setFont(new Font("Arial",Font.PLAIN,20));
+		calb2.setFont(new Font("Arial",Font.PLAIN,20));
+		
+		bck.setFont(new Font("Arial",Font.PLAIN,20));			
+		total.setFont(new Font("Arial",Font.PLAIN,20));
+		ext.setFont(new Font("Arial",Font.PLAIN,20));			
+
+		tot.setFont(new Font("Arial",Font.PLAIN,20));
+		dtot.setFont(new Font("Arial",Font.PLAIN,20));			
+		ctot.setFont(new Font("Arial",Font.PLAIN,20));
+		tdtot.setFont(new Font("Arial",Font.PLAIN,20));
+		ttot.setFont(new Font("Arial",Font.PLAIN,20));			
+		tctot.setFont(new Font("Arial",Font.PLAIN,20));
+		bill.setFont(new Font("Arial",Font.PLAIN,20));			
+		tbill.setFont(new Font("Arial",Font.PLAIN,20));
+		
+		bck.setMnemonic('B');
+		ext.setMnemonic('X');
+		total.setMnemonic('O');
+		
+		bck.setToolTipText("Click here to Back");
+		ext.setToolTipText("Click here to Exit");
+		total.setToolTipText("Click here to Calculate Bill");
+				
+		add(bck);	add(to);	add(from);	add(calb1);	add(calb2); add(total); add(bill); add(ext);
+		add(tot);	add(dtot);	add(ctot);	add(tdtot);	add(ttot);	add(tctot); add(tbill);
+		
+		to.setBounds(75,80,120,30);
+		calb1.setBounds(50,110,180,30);
+		from.setBounds(75,170,120,30);
+		calb2.setBounds(50,200,180,30);
+		bill.setBounds(75,250,180,30);
+		tbill.setBounds(50,290,180,30);
+			
+		dtot.setBounds(330,80,180,30);
+		tdtot.setBounds(310,110,180,30);
+		ctot.setBounds(330,170,180,30);
+		tctot.setBounds(310,200,180,30);
+		tot.setBounds(330,250,180,30);
+		ttot.setBounds(310,290,180,30);
+	
+		bck.setBounds(50,350,210,30);
+		total.setBounds(290,350,200,30);
+		ext.setBounds(50,410,440,30);
+		
+		bck.addActionListener(this);
+		total.addActionListener(this);
+		ext.addActionListener(this);
+		
+		try
+		{
+			cn = DriverManager.getConnection("jdbc:mysql:///project","root","");
+			stm =  cn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		
+		tctot.setEditable(false);
+		tdtot.setEditable(false);
+		ttot.setEditable(false);
+		setVisible(true);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+	
+	public void actionPerformed(ActionEvent e)
+	{
+		try
+		{
+			if(e.getSource()==bck)
+			{
+				new choicefrm();
+				dispose();
+			}
+			
+			if(e.getSource()==total)
+			{
+				if(tbill.getText().length()==0)
+				{
+					JOptionPane.showMessageDialog(null,"All fields are required !!!","INSERT Error",JOptionPane.WARNING_MESSAGE);
+				}
+				else
+				{
+					sql="select SUM(f_amt) from cust_bill where dt between'"+calb1.getText()+"' and '" + calb2.getText()+"' order by dt";
+					rs = stm.executeQuery(sql);  
+					while(rs.next())
+					{
+						sum=rs.getString(1);
+					}  	    		
+					tctot.setText(sum);
+					
+					sql="select SUM(f_amt) from deal_bill where dt between'"+calb1.getText()+"' and '" + calb2.getText()+"' order by dt";
+					rs = stm.executeQuery(sql);  
+					while(rs.next())
+					{
+						sum1=rs.getString(1);
+					}  	    		
+					tdtot.setText(sum1);
+					
+					no1=Integer.parseInt(tdtot.getText());
+					no2=Integer.parseInt(tctot.getText());
+					no3=Integer.parseInt(tbill.getText());
+					amt=no2-(no1+no3);
+					ttot.setText(""+amt);
+					
+					if(amt<0)
+					{
+						JOptionPane.showMessageDialog(null,"WE IN LOSS","LOSS",JOptionPane.WARNING_MESSAGE);
+					}
+					if(amt>0)
+					{
+						JOptionPane.showMessageDialog(null,"WE HAVE A PROFIT","PROFIT",JOptionPane.WARNING_MESSAGE);
+					}
+				}
+			}
+			
+			if(e.getSource()==ext)
+			{
+				System.exit(0);
+			}
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+	}
+	
+	public static void main(String args[])
+	{
+		new choice();
+	}
+}

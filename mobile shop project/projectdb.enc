@@ -1,0 +1,71 @@
+create table project
+(
+	name varchar(20),
+	password varchar(20),
+	ques varchar(30),
+	ans varchar(20)
+);
+
+insert into project values('siddhali','siddhali123','Favourite Food','panipuri');
+insert into project values('snehal','snehal123','Favourite Movie','YJHD');
+insert into project values('unnati','unnati123','Favourite Place','kerla');
+
+create table deal_info
+(
+	d_id int primary key,
+	d_name varchar(20),
+	d_add varchar(50),
+	d_phone long,
+	d_mail varchar(50)
+);
+
+create table prod_info
+(
+	p_id int primary key,
+	p_brand varchar(50),
+	p_modelno varchar(30),
+	p_imei varchar(20),
+	p_price int,
+	p_display float,
+	p_storage int,
+	p_ram int,
+	p_disk int,
+	p_battbkup int,
+	p_camera int,
+	p_verison float,
+	d_id int,
+	constraint fk_key foreign key(d_id) references deal_info(d_id)
+);
+
+create table cust_info
+(
+	c_id int primary key,
+	c_name varchar(20),
+	c_add varchar(50),
+	c_phone long,
+	c_mail varchar(50)
+);
+
+create table cust_bill
+(
+	cbill int primary key,
+	dt date,
+	c_id int,
+	p_id int,
+	rate int,
+	amt int,
+	discount int,
+	f_amt int,
+	constraint fk_key1 foreign key(c_id) references cust_info(c_id),
+	constraint fk_key2 foreign key(p_id) references prod_info(p_id) 	
+);
+
+create table deal_bill
+(
+	dbill int primary key,
+	dt date,
+	p_brand varchar(20),
+	p_price int,
+	amt int,
+	f_amt int
+);
